@@ -1,0 +1,66 @@
+[
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_slide_in_top.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_slide_in_top.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_popup_enter.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_popup_enter.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_fade_in.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_fade_in.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/design_fab_out.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/anim/design_fab_out.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_slide_out_top.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_slide_out_top.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/design_snackbar_out.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/anim/design_snackbar_out.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_fade_out.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_fade_out.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_shrink_fade_out_from_bottom.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_shrink_fade_out_from_bottom.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_slide_in_bottom.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_slide_in_bottom.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/design_bottom_sheet_slide_out.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/anim/design_bottom_sheet_slide_out.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/design_fab_in.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/anim/design_fab_in.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_slide_out_bottom.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_slide_out_bottom.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_popup_exit.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_popup_exit.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/design_snackbar_in.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/anim/design_snackbar_in.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/design_bottom_sheet_slide_in.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/anim/design_bottom_sheet_slide_in.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/anim/abc_grow_fade_in_from_bottom.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/anim/abc_grow_fade_in_from_bottom.xml"
+    }
+]

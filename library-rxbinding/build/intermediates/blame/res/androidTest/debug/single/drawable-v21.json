@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/design_password_eye.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/drawable-v21/design_password_eye.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/abc_action_bar_item_background_material.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/drawable-v21/abc_action_bar_item_background_material.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/rect_btn_selector.xml",
+        "source": "/Users/jbhv12/Documents/DontBurn/library/build/intermediates/bundles/default/res/drawable-v21/rect_btn_selector.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/design_bottom_navigation_item_background.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/drawable-v21/design_bottom_navigation_item_background.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/abc_edit_text_material.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/drawable-v21/abc_edit_text_material.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/suggestion_item_background.xml",
+        "source": "/Users/jbhv12/Documents/DontBurn/library/build/intermediates/bundles/default/res/drawable-v21/suggestion_item_background.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/notification_action_background.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/drawable-v21/notification_action_background.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/avd_show_password.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/drawable-v21/avd_show_password.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/avd_hide_password.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/drawable-v21/avd_hide_password.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/abc_btn_colored_material.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/drawable-v21/abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/androidTest/debug/drawable-v21/oval_btn_selector.xml",
+        "source": "/Users/jbhv12/Documents/DontBurn/library/build/intermediates/bundles/default/res/drawable-v21/oval_btn_selector.xml"
+    }
+]

@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_color_highlight_material.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_color_highlight_material.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_tint_switch_thumb.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_tint_switch_thumb.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_tint_edittext.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_tint_edittext.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_tint_spinner.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_tint_spinner.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/design_tint_password_toggle.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/color-v23/design_tint_password_toggle.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_tint_default.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_tint_default.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_tint_switch_track.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_tint_switch_track.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_tint_seek_thumb.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_tint_seek_thumb.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_tint_btn_checkable.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_tint_btn_checkable.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_btn_colored_text_material.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_btn_colored_text_material.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/debug/color-v23/abc_btn_colored_borderless_text_material.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/color-v23/abc_btn_colored_borderless_text_material.xml"
+    }
+]
