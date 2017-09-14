@@ -1,5 +1,6 @@
 package com.example.jbhv12.dontburn;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -35,7 +36,8 @@ import static android.content.ContentValues.TAG;
 
 public class HomeFragment extends BaseFragment {
     private FloatingSearchView sourceSearchView, destinationSearchView;
-    private LinearLayout barGraph;
+    public View v;
+    //private LinearLayout barGraph;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                          Bundle savedInstanceState) {
@@ -46,14 +48,20 @@ public class HomeFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         sourceSearchView = (FloatingSearchView) view.findViewById(R.id.search_source);
         destinationSearchView = (FloatingSearchView) view.findViewById(R.id.search_destination);
-        barGraph = (LinearLayout)view.findViewById(R.id.barGraph);
+
+        //barGraph = (LinearLayout)view.findViewById(R.id.barGraph);
 
         //mSearchResultsList = (RecyclerView) view.findViewById(R.id.search_results_list);
 
         setupFloatingSearch(sourceSearchView);
+        setupFloatingSearch(destinationSearchView);
         //setupResultsList();
         setupDrawer();
-        sampleGraph();
+        //sampleGraph();
+
+//        Brains b = new Brains();
+//        b.getDataSet("vadodara","ahmedabd");
+//        Log.e("call","bairns");
     }
     @Override
     public boolean onActivityBackPress() {
@@ -103,10 +111,12 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
                 Toast.makeText(getActivity(), "suggestion clicked" + searchSuggestion.getBody(), Toast.LENGTH_SHORT).show();
+                tryToFetchResults();
             }
             @Override
             public void onSearchAction(String query) {
                 Toast.makeText(getActivity(), "search clicked" + query, Toast.LENGTH_SHORT).show();
+                tryToFetchResults();
             }
         });
         sv.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
@@ -115,6 +125,7 @@ public class HomeFragment extends BaseFragment {
 
                 //show suggestions when search bar gains focus (typically history suggestions)
                 Toast.makeText(getActivity(), "focus" + sv.getQuery(), Toast.LENGTH_SHORT).show();
+                sv.bringToFront();
             }
 
             @Override
@@ -126,6 +137,7 @@ public class HomeFragment extends BaseFragment {
                 //mSearchView.setSearchText(searchSuggestion.getBody());
 
                 Toast.makeText(getActivity(), "focus Cleared" + sv.getQuery(), Toast.LENGTH_SHORT).show();
+
             }
         });
         sv.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
@@ -156,19 +168,25 @@ public class HomeFragment extends BaseFragment {
         attachSearchViewActivityDrawer(sourceSearchView);
     }
 
-    private void sampleGraph(){
-         ImageView i = new ImageView(getActivity());
-        i.setImageResource(R.drawable.graph_shape1);
-        i.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT, 1));
-
-        ImageView i2 = new ImageView(getActivity());
-        i2.setImageResource(R.drawable.graph_shape2);
-        i2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT, 1));
-        barGraph.addView(i);
-        barGraph.addView(i2);
-
+    private void tryToFetchResults(){
+        String sourceInputText = sourceSearchView.getQuery();
+        String destinationInputText = destinationSearchView.getQuery();
+        new Brains().getDataSet(sourceInputText,destinationInputText);
     }
+
+//    private void sampleGraph(){
+//         ImageView i = new ImageView(getActivity());
+//        i.setImageResource(R.drawable.graph_shape1);
+//        i.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.MATCH_PARENT, 1));
+//
+//        ImageView i2 = new ImageView(getActivity());
+//        i2.setImageResource(R.drawable.graph_shape2);
+//        i2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.MATCH_PARENT, 1));
+//        barGraph.addView(i);
+//        barGraph.addView(i2);
+//
+//    }
 
 }
