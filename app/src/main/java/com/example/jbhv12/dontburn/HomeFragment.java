@@ -1,7 +1,10 @@
 package com.example.jbhv12.dontburn;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -36,12 +39,11 @@ import static android.content.ContentValues.TAG;
 
 public class HomeFragment extends BaseFragment {
     private FloatingSearchView sourceSearchView, destinationSearchView;
-    public View v;
-    //private LinearLayout barGraph;
+    private boolean mDownloading = false;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                         Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.fragment_home, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -59,9 +61,8 @@ public class HomeFragment extends BaseFragment {
         setupDrawer();
         //sampleGraph();
 
-//        Brains b = new Brains();
-//        b.getDataSet("vadodara","ahmedabd");
-//        Log.e("call","bairns");
+
+
     }
     @Override
     public boolean onActivityBackPress() {
@@ -171,22 +172,17 @@ public class HomeFragment extends BaseFragment {
     private void tryToFetchResults(){
         String sourceInputText = sourceSearchView.getQuery();
         String destinationInputText = destinationSearchView.getQuery();
-        new Brains().getDataSet(sourceInputText,destinationInputText);
+        if(sourceInputText.length()>0 && destinationInputText.length()>0)
+            ((MainActivity)getActivity()).startDownload(sourceInputText,destinationInputText);
+    }
+    public void test(){
+        Log.e("frag","tessst");
     }
 
-//    private void sampleGraph(){
-//         ImageView i = new ImageView(getActivity());
-//        i.setImageResource(R.drawable.graph_shape1);
-//        i.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT, 1));
-//
-//        ImageView i2 = new ImageView(getActivity());
-//        i2.setImageResource(R.drawable.graph_shape2);
-//        i2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT, 1));
-//        barGraph.addView(i);
-//        barGraph.addView(i2);
-//
-//    }
+
+
+
+
+
 
 }
