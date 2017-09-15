@@ -107,13 +107,13 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
 
                     //simulates a query call to a data source
                     //with a new query.
-                    List<LocationSuggestion> sample = new ArrayList<LocationSuggestion>();
-                    sample.add(new LocationSuggestion("sample1"));
-                    sample.add(new LocationSuggestion("sample2"));
-                    sample.add(new LocationSuggestion("sample3"));
+//                    List<Place> sample = new ArrayList<Place>();
+//                    sample.add(new Place("sample1"));
+//                    sample.add(new Place("sample2"));
+//                    sample.add(new Place("sample3"));
 
 
-                    sv.swapSuggestions(sample);
+                   // sv.swapSuggestions(sample);
 
                                     //let the users know that the background
                                     //process has completed
@@ -175,7 +175,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
             @Override
             public void onBindSuggestion(View suggestionView, ImageView leftIcon,
                                          TextView textView, SearchSuggestion item, int itemPosition) {
-                LocationSuggestion colorSuggestion = (LocationSuggestion) item;
+                Place colorSuggestion = (Place) item;
                 //history,saved,location icon
             }
 
@@ -220,7 +220,10 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         predictions = gson.fromJson(response, PlacePredictions.class);
         ArrayList<Place>  a = predictions.getPlaces();
 
-        if(a.size()>0)Log.e("fiiinn",a.get(0).getPlaceDesc());
+        if(a.size()>0){
+            Log.e("fiiinn",a.get(0).getPlaceDesc());
+            sourceSearchView.swapSuggestions(a);
+        }
 //
 //        if (mAutoCompleteAdapter == null) {
 //            mAutoCompleteAdapter = new AutoCompleteAdapter(this, predictions.getPlaces(), PickLocationActivity.this);
