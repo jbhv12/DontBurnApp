@@ -1,33 +1,30 @@
 package com.example.jbhv12.dontburn;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
-import com.arlib.floatingsearchview.util.Util;
+import com.google.gson.Gson;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +34,15 @@ import static android.content.ContentValues.TAG;
  * Created by jbhv12 on 13/09/17.
  */
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment  implements  Response.Listener<String>, Response.ErrorListener,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private FloatingSearchView sourceSearchView, destinationSearchView;
     private boolean mDownloading = false;
+    private String GETPLACESHIT = "places_hit";
+    private VolleyJSONRequest request;
+    private Handler handler;
+    double latitude;
+    double longitude;
+    private PlacePredictions predictions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +92,19 @@ public class HomeFragment extends BaseFragment {
                     //the background.
                     sv.showProgress();
 
+
+                            // cancel all the previous requests in the queue to optimise your network calls during autocomplete search
+                            MainActivity.volleyQueueInstance.cancelRequestInQueue(GETPLACESHIT);
+
+                            //build Get url of Place Autocomplete and hit the url to fetch result.
+                            request = new VolleyJSONRequest(Request.Method.GET, getPlaceAutoCompleteUrl(sourceSearchView.getQuery()), null, null, HomeFragment.this, HomeFragment.this);
+
+                            //Give a tag to your request so that you can use this tag to cancle request later.
+                            request.setTag(GETPLACESHIT);
+
+                            MainActivity.volleyQueueInstance.addToRequestQueue(request);
+
+
                     //simulates a query call to a data source
                     //with a new query.
                     List<LocationSuggestion> sample = new ArrayList<LocationSuggestion>();
@@ -127,6 +143,9 @@ public class HomeFragment extends BaseFragment {
                 //show suggestions when search bar gains focus (typically history suggestions)
                 Toast.makeText(getActivity(), "focus" + sv.getQuery(), Toast.LENGTH_SHORT).show();
                 sv.bringToFront();
+//                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)sv.getLayoutParams();
+//                params.setMargins(0,10,0,0);
+//                sv.setLayoutParams(params);
             }
 
             @Override
@@ -168,7 +187,84 @@ public class HomeFragment extends BaseFragment {
     private void setupDrawer() {
         attachSearchViewActivityDrawer(sourceSearchView);
     }
+    public String getPlaceAutoCompleteUrl(String input) {
+        StringBuilder urlString = new StringBuilder();
+        urlString.append("https://maps.googleapis.com/maps/api/place/autocomplete/json");
+        urlString.append("?input=");
+        try {
+            urlString.append(URLEncoder.encode(input, "utf8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        urlString.append("&location=");
+        urlString.append(latitude + "," + longitude); // append lat long of current location to show nearby results.
+        urlString.append("&radius=500&language=en");
+        urlString.append("&key=" + "AIzaSyDtAErhpx1IhGArwC-WRa_0BERbsu5EeAg");
 
+        Log.d("FINAL URL:::   ", urlString.toString());
+        return urlString.toString();
+    }
+    @Override
+    public void onErrorResponse(VolleyError error) {
+
+        //searchBtn.setVisibility(View.VISIBLE);
+
+    }
+    @Override
+    public void onResponse(String response) {
+
+
+//        searchBtn.setVisibility(View.VISIBLE);
+        Log.d("PLACES RESULT:::", response);
+        Gson gson = new Gson();
+        predictions = gson.fromJson(response, PlacePredictions.class);
+        ArrayList<Place>  a = predictions.getPlaces();
+
+        if(a.size()>0)Log.e("fiiinn",a.get(0).getPlaceDesc());
+//
+//        if (mAutoCompleteAdapter == null) {
+//            mAutoCompleteAdapter = new AutoCompleteAdapter(this, predictions.getPlaces(), PickLocationActivity.this);
+//            mAutoCompleteList.setAdapter(mAutoCompleteAdapter);
+//        } else {
+//            mAutoCompleteAdapter.clear();
+//            mAutoCompleteAdapter.addAll(predictions.getPlaces());
+//            mAutoCompleteAdapter.notifyDataSetChanged();
+//            mAutoCompleteList.invalidate();
+//        }
+    }
+
+//    protected synchronized void buildGoogleApiClient() {
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .addApi(LocationServices.API)
+//                .build();
+//    }
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        Log.d("onconnected","func call");
+//        try {
+//            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                    mGoogleApiClient);
+//
+//            if (mLastLocation != null) {
+//                latitude = mLastLocation.getLatitude();
+//                longitude = mLastLocation.getLongitude();
+//            }
+//
+//        } catch (SecurityException e) {
+//            e.printStackTrace();
+//        }
+    }
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
     private void tryToFetchResults(){
         String sourceInputText = sourceSearchView.getQuery();
         String destinationInputText = destinationSearchView.getQuery();

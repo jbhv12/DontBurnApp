@@ -24,6 +24,7 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
 
     private DrawerLayout drawerLayout;
     private NetworkFragment mNetworkFragment;
+    public static VolleySingleton volleyQueueInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
         navigationView.setNavigationItemSelectedListener(this);
 
         mNetworkFragment = NetworkFragment.getInstance(getFragmentManager(), "smartass.pythonanywhere.com");
-
+        volleyQueueInstance = VolleySingleton.getInstance(getApplicationContext());
         showFragment(new HomeFragment());
     }
     //TODO: implemetn onBackPressed
