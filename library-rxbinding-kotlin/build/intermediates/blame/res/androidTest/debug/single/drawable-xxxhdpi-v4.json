@@ -1,11 +1,11 @@
 [
     {
-        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/androidTest/debug/drawable-xxxhdpi-v4/abc_spinner_mtrl_am_alpha.9.png",
-        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/drawable-xxxhdpi-v4/abc_spinner_mtrl_am_alpha.9.png"
-    },
-    {
         "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/androidTest/debug/drawable-xxxhdpi-v4/abc_ic_menu_copy_mtrl_am_alpha.png",
         "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/drawable-xxxhdpi-v4/abc_ic_menu_copy_mtrl_am_alpha.png"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/androidTest/debug/drawable-xxxhdpi-v4/abc_spinner_mtrl_am_alpha.9.png",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/drawable-xxxhdpi-v4/abc_spinner_mtrl_am_alpha.9.png"
     },
     {
         "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding-kotlin/build/intermediates/res/merged/androidTest/debug/drawable-xxxhdpi-v4/design_ic_visibility.png",

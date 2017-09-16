@@ -2,10 +2,13 @@ package com.example.jbhv12.dontburn;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -13,20 +16,25 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arlib.floatingsearchview.util.Util;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -42,12 +50,19 @@ import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
 /**
@@ -57,7 +72,11 @@ import static android.content.ContentValues.TAG;
 public class HomeFragment extends BaseFragment  implements  Response.Listener<String>, Response.ErrorListener,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private FloatingSearchView sourceSearchView, destinationSearchView;
     private LinearLayout resultLayout;
+    private PullToRefreshLayout mPullToRefreshLayout;
 
+    private SharedPreferences lh;
+    public static final String PREFS_NAME = "LocationHistory";
+    public ArrayList<PlaceSuggestion> locationHistory;
 
     private boolean mDownloading = false;     //TODO do something with this
     private String GETPLACESHIT = "places_hit";
@@ -70,6 +89,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
     private static final int MY_PERMISSIONS_REQUEST_LOC = 30;
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1001;
 
 
     @Override
@@ -82,11 +102,27 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         sourceSearchView = (FloatingSearchView) view.findViewById(R.id.search_source);
         destinationSearchView = (FloatingSearchView) view.findViewById(R.id.search_destination);
         resultLayout = (LinearLayout) view.findViewById(R.id.result_layout);
+        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.pull);
 
 
         setupFloatingSearch(sourceSearchView);
         setupFloatingSearch(destinationSearchView);
         setupDrawer();
+
+        ActionBarPullToRefresh.from(getActivity())
+                // Mark All Children as pullable
+                .allChildrenArePullable()
+                // Set a OnRefreshListener
+                .listener(new OnRefreshListener(){
+                    @Override
+                    public void onRefreshStarted(View view){
+                        Log.e("ou","pull");
+                        //mPullToRefreshLayout.setRefreshComplete();
+
+                    }
+                })
+        // Finally commit the setup to our PullToRefreshLayout
+            .setup(mPullToRefreshLayout);
 
         if(!isNetworkConnected()) {
             Snackbar.make(resultLayout, "No Network Connectivity", Snackbar.LENGTH_LONG)
@@ -121,6 +157,16 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                 initializeGoogleAPIClient();
             }
         }
+
+        lh = getActivity().getSharedPreferences(PREFS_NAME, 0);
+
+//        String json = lh.getString("historyArray", "");
+//
+//        Type type = new TypeToken<List<PlaceSuggestion>>(){}.getType();
+//        Gson gson = new Gson();
+//        locationHistory = gson.fromJson(json, type);
+//        if(locationHistory==null) locationHistory=new ArrayList<PlaceSuggestion>();
+
     }
     @Override
     public boolean onActivityBackPress() {
@@ -189,6 +235,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
 //                params.setMargins(0,10,0,0);
 //                sv.setLayoutParams(params);
 
+                sv.swapSuggestions(new PlaceSuggestionHistoryHelper(getActivity()).getHistory());
                 renderResults();
             }
 
@@ -202,6 +249,9 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
 
                 Toast.makeText(getActivity(), "focus Cleared " + sv.getQuery(), Toast.LENGTH_SHORT).show();
                 sv.clearSuggestions();
+
+                new PlaceSuggestionHistoryHelper(getActivity()).addToHistory(sv.getQuery());
+
             }
         });
         sv.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
@@ -225,6 +275,28 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                     sv.setSearchBarTitle(String.valueOf(latitude)+","+String.valueOf(longitude)); //TODO: make sure this order is correct
                 } else if(item.getItemId() == R.id.action_voice_rec) {
                     Toast.makeText(getActivity(), "voice", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    // Specify the calling package to identify your application
+                    intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass()
+                            .getPackage().getName());
+
+                    // Display an hint to the user about what he should say.
+                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "hint");
+
+                    // Given an hint to the recognizer about what the user is going to say
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                            RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+
+                    // If number of Matches is not selected then return show toast message
+
+
+                    int noOfMatches = 2;
+                    // Specify how many results you want to receive. The results will be
+                    // sorted where the first result is the one with higher confidence.
+
+                    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, noOfMatches);
+
+                    startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 
                 }
             }
@@ -233,8 +305,18 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
             @Override
             public void onBindSuggestion(View suggestionView, ImageView leftIcon,
                                          TextView textView, SearchSuggestion item, int itemPosition) {
-                PlaceSuggestion colorSuggestion = (PlaceSuggestion) item;
-                //history,saved,location icon
+                PlaceSuggestion placeSuggestion = (PlaceSuggestion) item;
+                if (placeSuggestion.getIsHistory()) {
+                    leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                            R.drawable.ic_history_black_24dp, null));
+
+                    //Util.setIconColor(leftIcon, Color.parseColor(textColor));
+                    leftIcon.setAlpha(.36f);
+                } else {
+                    //TODO set location icon here
+                    leftIcon.setAlpha(0.0f);
+                    leftIcon.setImageDrawable(null);
+                }
             }
 
         });
@@ -276,6 +358,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         //searchBtn.setVisibility(View.VISIBLE);
 
     }
+    //TODO set also for destination searchview
     @Override
     public void onResponse(String response) {
 
@@ -483,5 +566,35 @@ Log.e("connedcte","fail");
 
         resultLayout.addView((LinearLayout)resultTemplate.findViewById(R.id.result_template));
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE)
 
+            //If Voice recognition is successful then it returns RESULT_OK
+            if(resultCode == RESULT_OK) {
+
+                ArrayList<String> textMatchList = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+                if (!textMatchList.isEmpty()) {
+                    Log.e("spch",textMatchList.get(0));
+
+                }
+                //Result code for various error.
+            }else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){
+                showToastMessage("Audio Error");
+            }else if(resultCode == RecognizerIntent.RESULT_CLIENT_ERROR){
+                showToastMessage("Client Error");
+            }else if(resultCode == RecognizerIntent.RESULT_NETWORK_ERROR){
+                showToastMessage("Network Error");
+            }else if(resultCode == RecognizerIntent.RESULT_NO_MATCH){
+                showToastMessage("No Match");
+            }else if(resultCode == RecognizerIntent.RESULT_SERVER_ERROR){
+                showToastMessage("Server Error");
+            }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    void showToastMessage(String message){
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
 }

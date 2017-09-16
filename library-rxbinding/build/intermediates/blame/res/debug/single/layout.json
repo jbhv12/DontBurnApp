@@ -20,12 +20,12 @@
         "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/layout/abc_popup_menu_item_layout.xml"
     },
     {
-        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/layout/design_layout_snackbar_include.xml",
-        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/layout/design_layout_snackbar_include.xml"
-    },
-    {
         "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/layout/abc_select_dialog_material.xml",
         "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/layout/abc_select_dialog_material.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/layout/design_layout_snackbar_include.xml",
+        "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/layout/design_layout_snackbar_include.xml"
     },
     {
         "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/layout/abc_alert_dialog_title_material.xml",
@@ -52,12 +52,12 @@
         "source": "/Users/jbhv12/.android/build-cache/e4b65b88e6af94e749a4319be0534a465ba1c5fa/output/res/layout/design_layout_tab_icon.xml"
     },
     {
-        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/layout/abc_list_menu_item_layout.xml",
-        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/layout/abc_list_menu_item_layout.xml"
-    },
-    {
         "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view.xml",
         "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/layout/abc_activity_chooser_view.xml"
+    },
+    {
+        "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/layout/abc_list_menu_item_layout.xml",
+        "source": "/Users/jbhv12/.android/build-cache/7ffc6a417244a9dc41c36b880d70da06845be892/output/res/layout/abc_list_menu_item_layout.xml"
     },
     {
         "merged": "/Users/jbhv12/Documents/DontBurn/library-rxbinding/build/intermediates/res/merged/debug/layout/support_simple_spinner_dropdown_item.xml",

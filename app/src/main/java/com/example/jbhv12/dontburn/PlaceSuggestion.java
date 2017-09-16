@@ -12,6 +12,7 @@ public class PlaceSuggestion implements SearchSuggestion {
 
     private String place_id;
     private String description;
+    private boolean mIsHistory=false;
 
     public PlaceSuggestion(String suggestion) {
         this.description = suggestion;
@@ -22,13 +23,13 @@ public class PlaceSuggestion implements SearchSuggestion {
         //this.mIsHistory = source.readInt() != 0;
     }
 
-//    public void setIsHistory(boolean isHistory) {
-//        this.mIsHistory = isHistory;
-//    }
+    public void setIsHistory(boolean isHistory) {
+        this.mIsHistory = isHistory;
+    }
 
-//    public boolean getIsHistory() {
-//        return this.mIsHistory;
-//    }
+    public boolean getIsHistory() {
+        return this.mIsHistory;
+    }
 //
     @Override
     public String getBody() {

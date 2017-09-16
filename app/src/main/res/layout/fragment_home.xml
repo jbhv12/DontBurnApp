@@ -38,7 +38,12 @@
             app:floatingSearch_searchHint="Search ..."
             app:floatingSearch_showSearchKey="true"
             app:floatingSearch_suggestionsListAnimDuration="250" />
-
+    <uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pull"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,7 +58,9 @@
 
         </LinearLayout>
     </ScrollView>
-        <!--<LinearLayout-->
+    </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
+
+    <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="80dp"-->
             <!--android:orientation="horizontal"-->
