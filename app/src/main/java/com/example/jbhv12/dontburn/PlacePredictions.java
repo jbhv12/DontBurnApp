@@ -7,13 +7,13 @@ import java.util.ArrayList;
  */
 public class PlacePredictions {
 
-    public ArrayList<Place> getPlaces() {
+    public ArrayList<PlaceSuggestion> getPlaces() {
         return predictions;
     }
 
-    public void setPlaces(ArrayList<Place> places) {
-        this.predictions = places;
+    public void setPlaces(ArrayList<PlaceSuggestion> placeSuggestions) {
+        this.predictions = placeSuggestions;
     }
 
-    private ArrayList<Place> predictions;
+    private ArrayList<PlaceSuggestion> predictions;
 }

@@ -38,16 +38,21 @@
             app:floatingSearch_searchHint="Search ..."
             app:floatingSearch_showSearchKey="true"
             app:floatingSearch_suggestionsListAnimDuration="250" />
-    <LinearLayout
-        android:id="@+id/result_layout"
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp">
-        <ImageView
+        android:layout_marginTop="150dp">
+
+        <LinearLayout
+            android:id="@+id/result_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_history_black_24dp"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+        </LinearLayout>
+    </ScrollView>
         <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="80dp"-->

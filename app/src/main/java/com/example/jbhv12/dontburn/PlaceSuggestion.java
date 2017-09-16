@@ -8,16 +8,16 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 /**
  * Created by Kyra on 1/11/2016.
  */
-public class Place implements SearchSuggestion {
+public class PlaceSuggestion implements SearchSuggestion {
 
     private String place_id;
     private String description;
 
-    public Place(String suggestion) {
+    public PlaceSuggestion(String suggestion) {
         this.description = suggestion;
     }
 
-    public Place(Parcel source) {
+    public PlaceSuggestion(Parcel source) {
         this.description = source.readString();
         //this.mIsHistory = source.readInt() != 0;
     }
@@ -44,15 +44,15 @@ public class Place implements SearchSuggestion {
 //        dest.writeString(mLocation);
 //        dest.writeInt(mIsHistory ? 1 : 0);
     }
-    public static final Creator<Place> CREATOR = new Creator<Place>() {
+    public static final Creator<PlaceSuggestion> CREATOR = new Creator<PlaceSuggestion>() {
         @Override
-        public Place createFromParcel(Parcel in) {
-            return new Place(in);
+        public PlaceSuggestion createFromParcel(Parcel in) {
+            return new PlaceSuggestion(in);
         }
 
         @Override
-        public Place[] newArray(int size) {
-            return new Place[size];
+        public PlaceSuggestion[] newArray(int size) {
+            return new PlaceSuggestion[size];
         }
     };
 

@@ -38,6 +38,9 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
 
         mNetworkFragment = NetworkFragment.getInstance(getFragmentManager(), "smartass.pythonanywhere.com");
         volleyQueueInstance = VolleySingleton.getInstance(getApplicationContext());
+
+
+
         showFragment(new HomeFragment());
     }
     //TODO: implemetn onBackPressed
@@ -79,7 +82,7 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
         FragmentManager fm = getFragmentManager();
 
         HomeFragment fragment = (HomeFragment)fm.findFragmentById(R.id.content_frame);
-        fragment.test();
+        fragment.renderResults();
     }
     @Override
     public void onProgressUpdate(int progressCode, int percentComplete) {
