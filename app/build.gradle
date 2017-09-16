@@ -36,4 +36,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
 
     compile 'com.google.android.gms:play-services-location:8.4.0'
+
+    dependencies {
+        compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    }
 }

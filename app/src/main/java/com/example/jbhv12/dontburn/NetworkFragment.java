@@ -135,6 +135,8 @@ public class NetworkFragment extends Fragment {
                     cancel(true);
                 }
             }
+            //TODO set loading screen here
+            //View v = getActivity().findViewById()
         }
 
         /**

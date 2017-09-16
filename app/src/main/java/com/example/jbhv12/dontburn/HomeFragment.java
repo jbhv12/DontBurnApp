@@ -27,6 +27,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -42,6 +46,7 @@ import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -78,14 +83,12 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         destinationSearchView = (FloatingSearchView) view.findViewById(R.id.search_destination);
         resultLayout = (LinearLayout) view.findViewById(R.id.result_layout);
 
-        //barGraph = (LinearLayout)view.findViewById(R.id.barGraph);
 
-        //mSearchResultsList = (RecyclerView) view.findViewById(R.id.search_results_list);
+        setupFloatingSearch(sourceSearchView);
+        setupFloatingSearch(destinationSearchView);
+        setupDrawer();
+
         if(!isNetworkConnected()) {
-            setupFloatingSearch(sourceSearchView);
-            setupFloatingSearch(destinationSearchView);
-            setupDrawer();
-
             Snackbar.make(resultLayout, "No Network Connectivity", Snackbar.LENGTH_LONG)
                     .setAction("Open Settings", new View.OnClickListener() {
                         @Override
@@ -401,10 +404,10 @@ Log.e("connedcte","fail");
 
         Log.e("frag","tessst");
         ArrayList<Leg> fakedata = new ArrayList<>();
-        fakedata.add(new Leg(-1,20,1));
-        fakedata.add(new Leg(-1,20,1));
-        fakedata.add(new Leg(0,20,3));
-        fakedata.add(new Leg(1,20,6));
+        fakedata.add(new Leg(-2,20,1));
+        fakedata.add(new Leg(-1,20,2));
+        fakedata.add(new Leg(3,20,3));
+        fakedata.add(new Leg(-2,20,6));
 
 //        TextView textResult = new TextView(getActivity());
 //        textResult.setText("fake text loooong");
@@ -467,6 +470,17 @@ Log.e("connedcte","fail");
 
             barGraph.addView(barGraphFraction);
         }
+
+        LineChart lineChart = (LineChart)resultTemplate.findViewById(R.id.linechart);
+        List<Entry> entries = new ArrayList<Entry>();
+        for(Leg leg : fakedata) {
+            entries.add(new Entry(leg.time,(float)leg.direction));
+        }
+        LineDataSet dataSet = new LineDataSet(entries, "Label");
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+
         resultLayout.addView((LinearLayout)resultTemplate.findViewById(R.id.result_template));
     }
 
