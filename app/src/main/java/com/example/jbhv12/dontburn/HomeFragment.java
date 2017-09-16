@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -79,12 +81,21 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         //barGraph = (LinearLayout)view.findViewById(R.id.barGraph);
 
         //mSearchResultsList = (RecyclerView) view.findViewById(R.id.search_results_list);
+        if(!isNetworkConnected()) {
+            setupFloatingSearch(sourceSearchView);
+            setupFloatingSearch(destinationSearchView);
+            setupDrawer();
 
-        setupFloatingSearch(sourceSearchView);
-        setupFloatingSearch(destinationSearchView);
-        setupDrawer();
-
-
+            Snackbar.make(resultLayout, "No Network Connectivity", Snackbar.LENGTH_LONG)
+                    .setAction("Open Settings", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                            startActivity(myIntent);
+                            Log.e("lo  ", "snack");
+                        }
+                    }).show();
+        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             initializeGoogleAPIClient();
         } else {
@@ -211,6 +222,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                     sv.setSearchBarTitle(String.valueOf(latitude)+","+String.valueOf(longitude)); //TODO: make sure this order is correct
                 } else if(item.getItemId() == R.id.action_voice_rec) {
                     Toast.makeText(getActivity(), "voice", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -230,7 +242,11 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     private void setupDrawer() {
         attachSearchViewActivityDrawer(sourceSearchView);
     }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        return cm.getActiveNetworkInfo() != null;
+    }
 
 
 
@@ -253,7 +269,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     }
     @Override
     public void onErrorResponse(VolleyError error) {
-
+        //TODO toast
         //searchBtn.setVisibility(View.VISIBLE);
 
     }
@@ -306,7 +322,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     }
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+Log.e("connedcte","fail");
     }
     @Override
     public void onConnectionSuspended(int i) {
@@ -326,7 +342,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
 
                 } else {
                     // permission denied!
-
+                    //TODO show alert
                     Toast.makeText(getActivity(), "Please grant permission for using this app!", Toast.LENGTH_LONG).show();
                 }
                 return;
