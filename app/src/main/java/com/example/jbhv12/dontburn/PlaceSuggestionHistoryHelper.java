@@ -18,15 +18,17 @@ public class PlaceSuggestionHistoryHelper {
     private SharedPreferences lh;
     public static final String PREFS_NAME = "LocationHistory";
     private static final int historylimit = 10;
+    private String arrayKey;
 
-    public PlaceSuggestionHistoryHelper(Activity activity){
+    public PlaceSuggestionHistoryHelper(Activity activity,String arrayKey){
         lh = activity.getSharedPreferences(PREFS_NAME, 0);
+        this.arrayKey = arrayKey;
     }
     public ArrayList<PlaceSuggestion> getHistory(){
 
         ArrayList<PlaceSuggestion> locationHistory;
 
-        String json = lh.getString("historyArray", "");
+        String json = lh.getString(arrayKey, "");
         Type type = new TypeToken<List<PlaceSuggestion>>(){}.getType();
         Gson gson = new Gson();
         locationHistory = gson.fromJson(json, type);
@@ -44,7 +46,7 @@ public class PlaceSuggestionHistoryHelper {
 
         ArrayList<PlaceSuggestion> locationHistory;
 
-        String json = lh.getString("historyArray", "");
+        String json = lh.getString(arrayKey, "");
         Type type = new TypeToken<List<PlaceSuggestion>>(){}.getType();
         Gson gson = new Gson();
         locationHistory = gson.fromJson(json, type);
@@ -53,6 +55,12 @@ public class PlaceSuggestionHistoryHelper {
             locationHistory = new ArrayList<PlaceSuggestion>();
             locationHistory.add(placeSuggestion);
         }else {
+            for(int i=0;i<locationHistory.size();i++){
+                if(locationHistory.get(i).getPlaceDesc().equals(placeSuggestion.getPlaceDesc())){
+                    locationHistory.remove(i);
+                    break;
+                }
+            }
             locationHistory.add(0,placeSuggestion);
             if(locationHistory.size()>historylimit){
                 for(int i=locationHistory.size()-1;i>historylimit-1;i--)
@@ -62,8 +70,8 @@ public class PlaceSuggestionHistoryHelper {
 
         SharedPreferences.Editor prefsEditor = lh.edit();
         Gson gson2 = new Gson();
-        String json2 = gson.toJson(locationHistory);
-        prefsEditor.putString("historyArray", json2);
+        String json2 = gson2.toJson(locationHistory);
+        prefsEditor.putString(arrayKey, json2);
         prefsEditor.commit();
     }
 

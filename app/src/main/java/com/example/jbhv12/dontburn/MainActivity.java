@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.util.Util;
 
 import java.util.List;
 
@@ -45,6 +46,13 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
     }
     //TODO: implemetn onBackPressed
 
+    //fixing keyboard
+    @Override
+    protected void onPause() {
+        // Hide keyboard always on pause
+        Util.closeSoftKeyboard(this);
+        super.onPause();
+    }
 
     @Override
     public void onAttachSearchViewToDrawer(FloatingSearchView searchView) {

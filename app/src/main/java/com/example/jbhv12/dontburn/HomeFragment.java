@@ -71,6 +71,7 @@ import static android.content.ContentValues.TAG;
 
 public class HomeFragment extends BaseFragment  implements  Response.Listener<String>, Response.ErrorListener,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private FloatingSearchView sourceSearchView, destinationSearchView;
+    private int activeSearchView;
     private LinearLayout resultLayout;
     private PullToRefreshLayout mPullToRefreshLayout;
 
@@ -186,13 +187,13 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                 if (!oldQuery.equals("") && newQuery.equals("") || newQuery.equals(suggestionClicked)) {
                     sv.clearSuggestions();
                 } else {
-
+                    activeSearchView = sv.getId();
                     sv.showProgress();
                             // cancel all the previous requests in the queue to optimise your network calls during autocomplete search
                             MainActivity.volleyQueueInstance.cancelRequestInQueue(GETPLACESHIT);
 
                             //build Get url of PlaceSuggestion Autocomplete and hit the url to fetch result.
-                            request = new VolleyJSONRequest(Request.Method.GET, getPlaceAutoCompleteUrl(sourceSearchView.getQuery()), null, null, HomeFragment.this, HomeFragment.this);
+                            request = new VolleyJSONRequest(Request.Method.GET, getPlaceAutoCompleteUrl(sv.getQuery()), null, null, HomeFragment.this, HomeFragment.this);
 
                             //Give a tag to your request so that you can use this tag to cancle request later.
                             request.setTag(GETPLACESHIT);
@@ -234,8 +235,11 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
 //                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)sv.getLayoutParams();
 //                params.setMargins(0,10,0,0);
 //                sv.setLayoutParams(params);
-
-                sv.swapSuggestions(new PlaceSuggestionHistoryHelper(getActivity()).getHistory());
+                if(sv.getId() == sourceSearchView.getId()) {
+                    sv.swapSuggestions(new PlaceSuggestionHistoryHelper(getActivity(),"sourceSeachHistory").getHistory());
+                }else {
+                    sv.swapSuggestions(new PlaceSuggestionHistoryHelper(getActivity(),"destinationSeachHistory").getHistory());
+                }
                 renderResults();
             }
 
@@ -250,8 +254,11 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                 Toast.makeText(getActivity(), "focus Cleared " + sv.getQuery(), Toast.LENGTH_SHORT).show();
                 sv.clearSuggestions();
 
-                new PlaceSuggestionHistoryHelper(getActivity()).addToHistory(sv.getQuery());
-
+                if(sv.getId() == sourceSearchView.getId()) {
+                    new PlaceSuggestionHistoryHelper(getActivity(),"sourceSeachHistory").addToHistory(sv.getQuery());
+                }else {
+                    new PlaceSuggestionHistoryHelper(getActivity(),"destinationSeachHistory").addToHistory(sv.getQuery());
+                }
             }
         });
         sv.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
@@ -371,7 +378,11 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
 
         if(a.size()>0){
             Log.e("fiiinn",a.get(0).getPlaceDesc());
-            sourceSearchView.swapSuggestions(a);
+            if(activeSearchView == sourceSearchView.getId()) {
+                sourceSearchView.swapSuggestions(a);
+            }else {
+                destinationSearchView.swapSuggestions(a);
+            }
         }
 //
 //        if (mAutoCompleteAdapter == null) {
