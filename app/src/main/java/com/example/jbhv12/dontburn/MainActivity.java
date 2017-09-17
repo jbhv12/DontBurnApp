@@ -71,6 +71,13 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         drawerLayout.closeDrawer(GravityCompat.START);
         switch (menuItem.getItemId()) {
+            case R.id.contact:
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto","abc@gmail.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                return true;
             case R.id.rateme:
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW,
@@ -81,13 +88,22 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
                 }
                 return true;
             case R.id.about:
+                Intent myIntent = new Intent(MainActivity.this, AboutActivity.class);
+                MainActivity.this.startActivity(myIntent);
+                return true;
+            case R.id.shareresults:
+                //TODO put this under try catch
 
+                HomeFragment instanceFragment= (HomeFragment)getFragmentManager().findFragmentById(R.id.content_frame);
+                String from =  instanceFragment.sourceSearchView.getQuery();
+                String to = instanceFragment.destinationSearchView.getQuery();
+                //String result = instanceFragment.resultText.getText().toString();
 
-//                HomeFragment instanceFragment= (HomeFragment)getFragmentManager().findFragmentById(R.id.content_frame);
-//                FloatingSearchView s =  instanceFragment.sourceSearchView;
-//
-//                Toast.makeText(this.getApplicationContext(), s.getQuery(),
-//                        Toast.LENGTH_SHORT).show();
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, from);
+                startActivity(Intent.createChooser(sharingIntent, "whu"));
 
                 return true;
             default:

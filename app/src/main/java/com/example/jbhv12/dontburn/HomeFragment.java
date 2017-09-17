@@ -79,7 +79,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     private SharedPreferences lh;
     public static final String PREFS_NAME = "LocationHistory";
     public ArrayList<PlaceSuggestion> locationHistory;
-
+    public TextView resultText;
     private boolean mDownloading = false;     //TODO do something with this
     private String GETPLACESHIT = "places_hit";
     private VolleyJSONRequest request;
@@ -560,8 +560,8 @@ Log.e("connedcte","fail");
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View resultTemplate = inflater.inflate(R.layout.result_template,null);
 
-        TextView t = (TextView)resultTemplate.findViewById(R.id.resut_text);
-        t.setText("fake result");
+        resultText = (TextView)resultTemplate.findViewById(R.id.resut_text);
+        resultText.setText("fake result");
 
         LinearLayout barGraph = (LinearLayout)resultTemplate.findViewById(R.id.bar_graph);
         ImageView barGraphFraction;
