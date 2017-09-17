@@ -40,5 +40,8 @@ dependencies {
     dependencies {
         compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     }
-
+    dependencies {
+        compile 'com.github.DanielMartinus:Stepper-Touch:0.6'
+    }
+    
 }

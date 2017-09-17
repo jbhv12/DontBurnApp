@@ -3,8 +3,10 @@ package com.example.jbhv12.dontburn;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -21,11 +23,15 @@ import com.arlib.floatingsearchview.util.Util;
 
 import java.util.List;
 
+import nl.dionsegijn.steppertouch.OnStepCallback;
+import nl.dionsegijn.steppertouch.StepperCounter;
+
 public class MainActivity extends Activity implements BaseFragment.BaseExampleFragmentCallbacks, NavigationView.OnNavigationItemSelectedListener, DownloadCallback<String>{
 
     private DrawerLayout drawerLayout;
     private NetworkFragment mNetworkFragment;
     public static VolleySingleton volleyQueueInstance;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,9 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
 
 
         showFragment(new HomeFragment());
+
+
+
     }
     //TODO: implemetn onBackPressed
 
@@ -62,9 +71,24 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         drawerLayout.closeDrawer(GravityCompat.START);
         switch (menuItem.getItemId()) {
+            case R.id.rateme:
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=" + this.getPackageName())));
+                } catch (android.content.ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
+                }
+                return true;
             case R.id.about:
-                Toast.makeText(this.getApplicationContext(), "about--actually start fragment",
-                        Toast.LENGTH_SHORT).show();
+
+
+//                HomeFragment instanceFragment= (HomeFragment)getFragmentManager().findFragmentById(R.id.content_frame);
+//                FloatingSearchView s =  instanceFragment.sourceSearchView;
+//
+//                Toast.makeText(this.getApplicationContext(), s.getQuery(),
+//                        Toast.LENGTH_SHORT).show();
+
                 return true;
             default:
                 return true;

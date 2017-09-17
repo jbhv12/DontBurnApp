@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:title="about"
-    android:id="@+id/about">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="about"
+        android:id="@+id/about">
+    </item>
+    <item
+        android:title="Show Results for"
+        app:actionLayout="@layout/location_item_layout">
+        app:showAsAction="always"
+    </item>
+    <item android:title="Rate This App"
+        android:id="@+id/rateme">
+    </item>
+    <item android:title="Contact Me"
+        android:id="@+id/contact"/>
+    <item android:title="pro"
+        android:id="@+id/pro"/>
+    <item android:id="@+id/shareresults"
+        android:title="share"/>
 
-</item>
 </menu>

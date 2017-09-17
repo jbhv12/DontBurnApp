@@ -60,6 +60,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import nl.dionsegijn.steppertouch.OnStepCallback;
+import nl.dionsegijn.steppertouch.StepperCounter;
+
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
@@ -68,11 +71,11 @@ import static android.content.ContentValues.TAG;
  */
 
 public class HomeFragment extends BaseFragment  implements  Response.Listener<String>, Response.ErrorListener,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private FloatingSearchView sourceSearchView, destinationSearchView;
+    public FloatingSearchView sourceSearchView, destinationSearchView;
     private int activeSearchView;
     private LinearLayout resultLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
+    private StepperCounter sc;
     private SharedPreferences lh;
     public static final String PREFS_NAME = "LocationHistory";
     public ArrayList<PlaceSuggestion> locationHistory;
@@ -102,7 +105,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         destinationSearchView = (FloatingSearchView) view.findViewById(R.id.search_destination);
         resultLayout = (LinearLayout) view.findViewById(R.id.result_layout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.container);
-
+        sc = (StepperCounter) view.findViewById(R.id.sc);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
             public void onRefresh() {
@@ -111,6 +114,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
+                        renderResults();
                     }
                 }, 2000);
             }
@@ -119,6 +123,15 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         setupFloatingSearch(destinationSearchView);
         setupDrawer();
 
+        sc.setMin(0);sc.setMax(10);
+        sc.addStepCallback(new OnStepCallback(){
+            @Override
+            public void onStep(int var1, boolean var2){
+                Log.e("main",String.valueOf(var1));
+                Log.e("main",String.valueOf(var2));
+            }
+        });
+        Log.e("main",String.valueOf(sc.getCount()));
 
 
         if(!isNetworkConnected()) {
@@ -185,16 +198,20 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                 } else {
                     activeSearchView = sv.getId();
                     sv.showProgress();
-                            // cancel all the previous requests in the queue to optimise your network calls during autocomplete search
-                            MainActivity.volleyQueueInstance.cancelRequestInQueue(GETPLACESHIT);
 
-                            //build Get url of PlaceSuggestion Autocomplete and hit the url to fetch result.
-                            request = new VolleyJSONRequest(Request.Method.GET, getPlaceAutoCompleteUrl(sv.getQuery()), null, null, HomeFragment.this, HomeFragment.this);
+                    if(newQuery.length()>1){  //only qury when len >2
+                        //TODO wrap this into runable handler
+                        // cancel all the previous requests in the queue to optimise your network calls during autocomplete search
+                        MainActivity.volleyQueueInstance.cancelRequestInQueue(GETPLACESHIT);
 
-                            //Give a tag to your request so that you can use this tag to cancle request later.
-                            request.setTag(GETPLACESHIT);
+                        //build Get url of PlaceSuggestion Autocomplete and hit the url to fetch result.
+                        request = new VolleyJSONRequest(Request.Method.GET, getPlaceAutoCompleteUrl(sv.getQuery()), null, null, HomeFragment.this, HomeFragment.this);
 
-                            MainActivity.volleyQueueInstance.addToRequestQueue(request);
+                        //Give a tag to your request so that you can use this tag to cancle request later.
+                        request.setTag(GETPLACESHIT);
+
+                        MainActivity.volleyQueueInstance.addToRequestQueue(request);
+                    }
 
                     sv.hideProgress();
                 }
