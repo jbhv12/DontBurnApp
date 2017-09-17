@@ -40,10 +40,5 @@ dependencies {
     dependencies {
         compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     }
-    dependencies {
-        repositories {
-            mavenCentral()
-        }
-        compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
-    }
+
 }

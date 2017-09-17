@@ -58,9 +58,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -73,7 +70,6 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     private FloatingSearchView sourceSearchView, destinationSearchView;
     private int activeSearchView;
     private LinearLayout resultLayout;
-    private PullToRefreshLayout mPullToRefreshLayout;
 
     private SharedPreferences lh;
     public static final String PREFS_NAME = "LocationHistory";
@@ -103,27 +99,13 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         sourceSearchView = (FloatingSearchView) view.findViewById(R.id.search_source);
         destinationSearchView = (FloatingSearchView) view.findViewById(R.id.search_destination);
         resultLayout = (LinearLayout) view.findViewById(R.id.result_layout);
-        mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.pull);
 
 
         setupFloatingSearch(sourceSearchView);
         setupFloatingSearch(destinationSearchView);
         setupDrawer();
 
-        ActionBarPullToRefresh.from(getActivity())
-                // Mark All Children as pullable
-                .allChildrenArePullable()
-                // Set a OnRefreshListener
-                .listener(new OnRefreshListener(){
-                    @Override
-                    public void onRefreshStarted(View view){
-                        Log.e("ou","pull");
-                        //mPullToRefreshLayout.setRefreshComplete();
 
-                    }
-                })
-        // Finally commit the setup to our PullToRefreshLayout
-            .setup(mPullToRefreshLayout);
 
         if(!isNetworkConnected()) {
             Snackbar.make(resultLayout, "No Network Connectivity", Snackbar.LENGTH_LONG)
