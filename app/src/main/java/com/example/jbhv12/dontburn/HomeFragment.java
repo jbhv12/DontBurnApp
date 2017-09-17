@@ -263,6 +263,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                     }
                     sv.setSearchBarTitle(String.valueOf(latitude)+","+String.valueOf(longitude)); //TODO: make sure this order is correct
                 } else if(item.getItemId() == R.id.action_voice_rec) {
+                    activeSearchView = sv.getId();
                     Toast.makeText(getActivity(), "voice", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                     // Specify the calling package to identify your application
@@ -570,8 +571,12 @@ Log.e("connedcte","fail");
                         .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                 if (!textMatchList.isEmpty()) {
+                    if(activeSearchView == sourceSearchView.getId()){
+                        sourceSearchView.setSearchBarTitle(textMatchList.get(0));
+                    }else {
+                        destinationSearchView.setSearchBarTitle(textMatchList.get(0));
+                    }
                     Log.e("spch",textMatchList.get(0));
-
                 }
                 //Result code for various error.
             }else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){
