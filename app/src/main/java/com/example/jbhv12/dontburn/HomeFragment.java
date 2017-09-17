@@ -22,6 +22,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -70,6 +71,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     private FloatingSearchView sourceSearchView, destinationSearchView;
     private int activeSearchView;
     private LinearLayout resultLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private SharedPreferences lh;
     public static final String PREFS_NAME = "LocationHistory";
@@ -99,8 +101,20 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         sourceSearchView = (FloatingSearchView) view.findViewById(R.id.search_source);
         destinationSearchView = (FloatingSearchView) view.findViewById(R.id.search_destination);
         resultLayout = (LinearLayout) view.findViewById(R.id.result_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.container);
 
-
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            @Override
+            public void onRefresh() {
+                Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
         setupFloatingSearch(sourceSearchView);
         setupFloatingSearch(destinationSearchView);
         setupDrawer();

@@ -38,11 +38,14 @@
             app:floatingSearch_searchHint="Search ..."
             app:floatingSearch_showSearchKey="true"
             app:floatingSearch_suggestionsListAnimDuration="250" />
-
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="150dp">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="150dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/result_layout"
@@ -53,6 +56,8 @@
 
         </LinearLayout>
     </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>
+
 
     <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->
