@@ -23,6 +23,6 @@ public class AboutActivity extends SlidingActivity {
                 getResources().getColor(R.color.colorPrimaryDark)
         );
         //disableHeader();
-        setContent(R.layout.activity_about);
+        //setContent(R.layout.activity_about);
     }
 }
