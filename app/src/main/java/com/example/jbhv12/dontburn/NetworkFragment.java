@@ -2,6 +2,7 @@ package com.example.jbhv12.dontburn;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,7 +10,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,6 +101,7 @@ public class NetworkFragment extends Fragment {
     }
     private class DownloadTask extends AsyncTask<String, Void, DownloadTask.Result> {
 
+        private TextView t;
         private DownloadCallback<String> mCallback;
 
         DownloadTask(DownloadCallback<String> callback) {
@@ -136,7 +145,17 @@ public class NetworkFragment extends Fragment {
                 }
             }
             //TODO set loading screen here
-            //View v = getActivity().findViewById()
+//            ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
+//                    "Loading. Please wait...", true);
+
+
+            LinearLayout resultLayout = (LinearLayout) getActivity().findViewById(R.id.result_layout);
+            t = new TextView(getActivity());
+            t.setText("loading");
+            t.setTextSize(60);
+
+            resultLayout.removeAllViews();
+            resultLayout.addView(t);
         }
 
         /**
@@ -183,6 +202,14 @@ public class NetworkFragment extends Fragment {
                 }
                 //mCallback.finishDownloading();
             }
+
+            //remove loading
+            LinearLayout resultLayout = (LinearLayout) getActivity().findViewById(R.id.result_layout);
+
+
+            resultLayout.removeView(t);
+            //resultLayout.addView(t);
+
         }
 
         /**

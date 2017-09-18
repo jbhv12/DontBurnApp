@@ -75,7 +75,6 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     private int activeSearchView;
     private LinearLayout resultLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private StepperCounter sc;
     private SharedPreferences lh;
     public static final String PREFS_NAME = "LocationHistory";
     public ArrayList<PlaceSuggestion> locationHistory;
@@ -105,7 +104,6 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         destinationSearchView = (FloatingSearchView) view.findViewById(R.id.search_destination);
         resultLayout = (LinearLayout) view.findViewById(R.id.result_layout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.container);
-        sc = (StepperCounter) view.findViewById(R.id.sc);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
             public void onRefresh() {
@@ -114,7 +112,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        renderResults();
+                        //renderResults();
                     }
                 }, 2000);
             }
@@ -123,15 +121,6 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         setupFloatingSearch(destinationSearchView);
         setupDrawer();
 
-        sc.setMin(0);sc.setMax(10);
-        sc.addStepCallback(new OnStepCallback(){
-            @Override
-            public void onStep(int var1, boolean var2){
-                Log.e("main",String.valueOf(var1));
-                Log.e("main",String.valueOf(var2));
-            }
-        });
-        Log.e("main",String.valueOf(sc.getCount()));
 
 
         if(!isNetworkConnected()) {
@@ -253,7 +242,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                 }else {
                     sv.swapSuggestions(new PlaceSuggestionHistoryHelper(getActivity(),"destinationSeachHistory").getHistory());
                 }
-                renderResults();
+                //renderResults();
             }
 
             @Override
@@ -509,7 +498,6 @@ Log.e("connedcte","fail");
     }
     public void renderResults(){
 
-
         Log.e("frag","tessst");
         ArrayList<Leg> fakedata = new ArrayList<>();
         fakedata.add(new Leg(-2,20,1));
@@ -517,45 +505,8 @@ Log.e("connedcte","fail");
         fakedata.add(new Leg(3,20,3));
         fakedata.add(new Leg(-2,20,6));
 
-//        TextView textResult = new TextView(getActivity());
-//        textResult.setText("fake text loooong");
-//        textResult.setTextSize(100);
-//        LinearLayout.LayoutParams textResultParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        textResultParams.setMargins(10,0,10,0);
-//        textResultParams.gravity= Gravity.CENTER;
-//        textResult.setLayoutParams(textResultParams);
-//
-//        CardView textCard = new CardView(getActivity());
-//        textCard.setRadius(20);
-//        LinearLayout.LayoutParams textCardParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, textResultParams.height);
-//        textCardParams.setMargins(10, 10, 10, 10);
-//        textCard.setLayoutParams(textCardParams);
-//
-//        textCard.addView(textResult);
-//
-//        resultLayout.addView(textCard);
-//
-//
-//
-//        LinearLayout barGraph = new LinearLayout(getActivity());
-//        barGraph.setOrientation(LinearLayout.HORIZONTAL);
-//        barGraph.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,190));
-//        ImageView barGraphFraction;
-//        for(Leg leg : fakedata){
-//            barGraphFraction = new ImageView(getActivity());
-//
-//            if(leg.direction<0) barGraphFraction.setImageResource(R.drawable.graph_shape1);
-//            else if(leg.direction==0) barGraphFraction.setImageResource(R.drawable.graph_shape2);
-//            else barGraphFraction.setImageResource(R.drawable.graph_shape3);
-//            int barGraphWidht = resultLayout.getWidth();
-//            int fractionWidth = (leg.time*barGraphWidht)/11;
-//            barGraphFraction.setLayoutParams(new LinearLayout.LayoutParams(fractionWidth,190));
-//            barGraphFraction.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//
-//            barGraph.addView(barGraphFraction);
-//        }
-//        resultLayout.addView(barGraph);
 
+        resultLayout.removeAllViews();
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View resultTemplate = inflater.inflate(R.layout.result_template,null);
