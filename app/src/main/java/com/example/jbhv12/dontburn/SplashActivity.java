@@ -1,6 +1,8 @@
 package com.example.jbhv12.dontburn;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -11,45 +13,49 @@ import android.util.Log;
 import com.vansuita.library.CheckNewAppVersion;
 
 public class SplashActivity extends AppCompatActivity {
-
+    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Context context = this;
+        intent = new Intent(this, MainActivity.class);
+
         new CheckNewAppVersion(this).setOnTaskCompleteListener(new CheckNewAppVersion.ITaskComplete() {
             @Override
             public void onTaskComplete(CheckNewAppVersion.Result result) {
 
-
-                //result.openUpdateLink();
+                final CheckNewAppVersion.Result bc = result;
+                //
 
                 if(!result.hasNewVersion()){
                     AlertDialog.Builder builder;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        builder = new AlertDialog.Builder(SplashActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+                        builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
                     } else {
-                        builder = new AlertDialog.Builder(SplashActivity.this);
+                        builder = new AlertDialog.Builder(context);
                     }
-                    builder.setTitle("Delete entry")
-                            .setMessage("Are you sure you want to delete this entry?")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    builder.setTitle("Update available")
+                            .setMessage("u must update")
+                            .setPositiveButton("update", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // continue with delete
+                                    bc.openUpdateLink();
                                 }
                             })
-                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            .setNegativeButton("close app", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // do nothing
+                                    System.exit(0);
                                 }
                             })
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
+                }else {
+                    startActivity(intent);
+                    finish();
                 }
             }
         }).execute();
-
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
-
     }
+
 }
