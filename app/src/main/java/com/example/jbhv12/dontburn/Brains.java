@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,22 +25,15 @@ public class Brains {
     private String serverURL = "smartass.pythonanywhere.com";
     private String TAG = "brains";
 
-    public void getDataSet(String source, String destination){
-        try{
-            //new getDirectionData().execute(serverURL,source,destination);
-        } catch (Exception e){
-
-        }
-    }
-    public int getPercentageDistanceLeft(ArrayList<Leg> dataset){
-        return 0;
-    }
-    public ArrayList<Leg> parse(String raw){
+    public ArrayList<Leg> getLegArrayFromRawString(String raw){
         ArrayList<Leg> fakedata = new ArrayList<>();
-        fakedata.add(new Leg(1,20,30));
-        fakedata.add(new Leg(1,20,30));
-        fakedata.add(new Leg(1,20,30));
-        fakedata.add(new Leg(1,20,30));
+//        fakedata.add(new Leg(-2,20,1));
+//        fakedata.add(new Leg(-1,20,2));
+//        fakedata.add(new Leg(3,20,3));
+//        fakedata.add(new Leg(-2,20,6));
+
+        //JSONObject json = new JSONObject(raw);
         return fakedata;
+
     }
 }

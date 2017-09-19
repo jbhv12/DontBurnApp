@@ -131,7 +131,7 @@ public class MainActivity extends Activity implements BaseFragment.BaseExampleFr
         FragmentManager fm = getFragmentManager();
 
         HomeFragment fragment = (HomeFragment)fm.findFragmentById(R.id.content_frame);
-        fragment.renderResults();
+        fragment.renderResults(result   );
     }
     @Override
     public void onProgressUpdate(int progressCode, int percentComplete) {

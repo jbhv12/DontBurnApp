@@ -5,11 +5,12 @@ package com.example.jbhv12.dontburn;
  */
 
 public class Leg {
-    public int distance,time;
-    public double direction;
-    public Leg(double direction,int distance, int time){
-        this.direction = direction;
+    public int distance,duration;
+    public double dir_start, dir_end;
+    public Leg(double dir_end, double dir_start,int distance, int duration){
+        this.dir_end = dir_end;
+        this.dir_start = dir_start;
         this.distance = distance;
-        this.time = time;
+        this.duration = duration;
     }
 }

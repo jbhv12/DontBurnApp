@@ -86,6 +86,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     double latitude;
     double longitude;
     private PlacePredictions predictions;
+    private Legs legs;
     private String suggestionClicked;
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
@@ -112,7 +113,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        //renderResults();
+                        tryToFetchResults();
                     }
                 }, 2000);
             }
@@ -381,6 +382,8 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
 
         if(a.size()>0){
             Log.e("fiiinn",a.get(0).getPlaceDesc());
+            Log.e("chej",a.get(0).getPlaceID());
+
             if(activeSearchView == sourceSearchView.getId()) {
                 sourceSearchView.swapSuggestions(a);
             }else {
@@ -496,17 +499,39 @@ Log.e("connedcte","fail");
         if(sourceInputText.length()>0 && destinationInputText.length()>0)
             ((MainActivity)getActivity()).startDownload(sourceInputText,destinationInputText);
     }
-    public void renderResults(){
+    public void renderResults(String rawResult){
+
+        ArrayList<Leg> realResults = null;
+
+        Log.e("LEGS RESULT:::", rawResult);
+        Gson gson = new Gson();
+        try {
+            legs = gson.fromJson(rawResult,Legs.class);
+            realResults = legs.getLegs();
+            Log.e("ya bithc",String.valueOf(realResults.get(0).dir_end));
+            Log.e("ya bithc",String.valueOf(realResults.get(0).distance));
+            Log.e("ya bithc",String.valueOf(realResults.get(0).duration));
+            Log.e("ya bithc",String.valueOf(realResults.get(0).dir_start));
+        }catch (Exception e){
+            Log.e("exp",e.toString());
+        }
+        //render a
 
         Log.e("frag","tessst");
-        ArrayList<Leg> fakedata = new ArrayList<>();
-        fakedata.add(new Leg(-2,20,1));
-        fakedata.add(new Leg(-1,20,2));
-        fakedata.add(new Leg(3,20,3));
-        fakedata.add(new Leg(-2,20,6));
+//        ArrayList<Leg> fakedata = new ArrayList<>();
+//        fakedata.add(new Leg(-2,20,1));
+//        fakedata.add(new Leg(-1,20,2));
+//        fakedata.add(new Leg(3,20,3));
+//        fakedata.add(new Leg(-2,20,6));
 
 
         resultLayout.removeAllViews();
+
+        if(realResults == null){
+
+        }if(realResults.size() == 0){
+
+        }
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View resultTemplate = inflater.inflate(R.layout.result_template,null);
@@ -514,31 +539,36 @@ Log.e("connedcte","fail");
         resultText = (TextView)resultTemplate.findViewById(R.id.resut_text);
         resultText.setText("fake result");
 
+
+
+        LineChart lineChart = (LineChart)resultTemplate.findViewById(R.id.linechart);
+        List<Entry> entries = new ArrayList<Entry>();
+        float i=0;
+        for(Leg leg : realResults) {
+            entries.add(new Entry(i+leg.duration,(float)leg.dir_start));
+            entries.add(new Entry(i+leg.duration,(float)leg.dir_end));
+            i+=leg.duration;
+        }
+        LineDataSet dataSet = new LineDataSet(entries, "Label");
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+
+
         LinearLayout barGraph = (LinearLayout)resultTemplate.findViewById(R.id.bar_graph);
         ImageView barGraphFraction;
-        for(Leg leg : fakedata){
+        for(Leg leg : realResults){
             barGraphFraction = new ImageView(getActivity());
 
-            if(leg.direction<0) barGraphFraction.setImageResource(R.drawable.graph_shape1);
-            else if(leg.direction==0) barGraphFraction.setImageResource(R.drawable.graph_shape2);
+            if(leg.dir_start>0 && leg.dir_start<2) barGraphFraction.setImageResource(R.drawable.graph_shape1);
+                //else if(leg.direction==0) barGraphFraction.setImageResource(R.drawable.graph_shape2);
             else barGraphFraction.setImageResource(R.drawable.graph_shape3);
             int barGraphWidht = resultLayout.getWidth();        //fix this
-            int fractionWidth = (leg.time*barGraphWidht)/11;
-            barGraphFraction.setLayoutParams(new LinearLayout.LayoutParams(fractionWidth,190));
+            int fractionWidth = (leg.duration*barGraphWidht)/(int)i;
+            barGraphFraction.setLayoutParams(new LinearLayout.LayoutParams(fractionWidth,100));
             barGraphFraction.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             barGraph.addView(barGraphFraction);
         }
-
-        LineChart lineChart = (LineChart)resultTemplate.findViewById(R.id.linechart);
-        List<Entry> entries = new ArrayList<Entry>();
-        for(Leg leg : fakedata) {
-            entries.add(new Entry(leg.time,(float)leg.direction));
-        }
-        LineDataSet dataSet = new LineDataSet(entries, "Label");
-
-        LineData lineData = new LineData(dataSet);
-        lineChart.setData(lineData);
 
         resultLayout.addView((LinearLayout)resultTemplate.findViewById(R.id.result_template));
     }
