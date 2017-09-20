@@ -215,7 +215,6 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         sv.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
-                sv.anim
                 //Toast.makeText(getActivity(), "focus " + sv.getQuery(), Toast.LENGTH_SHORT).show();
                 sv.bringToFront();
                 if (lastQuery.length()!=0) sv.setSearchBarTitle(lastQuery); //TODO fix this
