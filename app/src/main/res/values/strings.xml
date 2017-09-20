@@ -7,4 +7,14 @@
 
     <string name="action_voice_rec">action voice rec</string>
     <string name="action_location">action location</string>
+
+    <string name="network_not_connected">No Network Connectivity</string>
+    <string name="open_network_setting">Open Settings</string>
+    <string name="SP_array_key_sourceHistory">sourceSeachHistory</string>
+    <string name="SP_array_key_destinationHistory">destinationSeachHistory</string>
+    <string name="voice_search_hint">Try Speaking</string>
+
+    <string name="sourceSearchHint">Enter Source</string>
+    <string name="destinationSearchHint">Enter Destination</string>
+
 </resources>

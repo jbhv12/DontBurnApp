@@ -4,10 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DontBurn.iml" filepath="$PROJECT_DIR$/DontBurn.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library-rxbinding/library-rxbinding.iml" filepath="$PROJECT_DIR$/library-rxbinding/library-rxbinding.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library-rxbinding-kotlin/library-rxbinding-kotlin.iml" filepath="$PROJECT_DIR$/library-rxbinding-kotlin/library-rxbinding-kotlin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/floatingsearchview/floatingsearchview.iml" filepath="$PROJECT_DIR$/libs/floatingsearchview/floatingsearchview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/floatingsearchview/library/library.iml" filepath="$PROJECT_DIR$/libs/floatingsearchview/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
     </modules>
   </component>
 </project>

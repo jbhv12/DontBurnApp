@@ -1,1 +1,2 @@
-include ':app', ':library-rxbinding', ':sample', ':library-rxbinding-kotlin', ':library'
+include ':app'
+include ':libs:floatingsearchview:library'

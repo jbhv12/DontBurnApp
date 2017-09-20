@@ -2,13 +2,10 @@ package com.example.jbhv12.dontburn;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -28,14 +25,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.arlib.floatingsearchview.util.Util;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -51,17 +45,12 @@ import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import nl.dionsegijn.steppertouch.OnStepCallback;
-import nl.dionsegijn.steppertouch.StepperCounter;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -73,25 +62,26 @@ import static android.content.ContentValues.TAG;
 public class HomeFragment extends BaseFragment  implements  Response.Listener<String>, Response.ErrorListener,  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public FloatingSearchView sourceSearchView, destinationSearchView;
     private int activeSearchView;
+
     private LinearLayout resultLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private SharedPreferences lh;
-    public static final String PREFS_NAME = "LocationHistory";
-    public ArrayList<PlaceSuggestion> locationHistory;
     public TextView resultText;
-    private boolean mDownloading = false;     //TODO do something with this
-    private String GETPLACESHIT = "places_hit";
     private VolleyJSONRequest request;
-    private Handler handler;   //TODO study runable in java
+    private Handler handler;
     double latitude;
     double longitude;
+
     private PlacePredictions predictions;
     private Legs legs;
+
     private String suggestionClicked;
+    private String lastQuery = "";
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
+
     private static final int MY_PERMISSIONS_REQUEST_LOC = 30;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1001;
+    private static final String GETPLACESHIT = "places_hit";
 
 
     @Override
@@ -104,80 +94,66 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         sourceSearchView = (FloatingSearchView) view.findViewById(R.id.search_source);
         destinationSearchView = (FloatingSearchView) view.findViewById(R.id.search_destination);
         resultLayout = (LinearLayout) view.findViewById(R.id.result_layout);
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.container);
+
+        setupRefreshLayout();
+        setupFloatingSearch(sourceSearchView);
+        setupFloatingSearch(destinationSearchView);
+        setupDrawer();
+
+        checkNetworkConnectivity();
+        initializeGoogleAppClient();
+    }
+    @Override
+    public boolean onActivityBackPress() {  //TODO implement this
+        //if mSearchView.setSearchFocused(false) causes the focused search
+        //to close, then we don't want to close the activity. if mSearchView.setSearchFocused(false)
+        //returns false, we know that the search was already closed so the call didn't change the focus
+        //state and it makes sense to call supper onBackPressed() and close the activity
+        if (sourceSearchView.isSearchBarFocused()) {
+            sourceSearchView.clearSearchFocus();
+            return false;
+        }
+        return true;
+    }
+    public void checkNetworkConnectivity(){
+        if(!isNetworkConnected()) {
+            Snackbar.make(resultLayout, R.string.network_not_connected, Snackbar.LENGTH_LONG) //TODO change length maybe
+                    .setAction(R.string.open_network_setting, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                            startActivity(myIntent);
+                        }
+                    }).show();
+        }
+    }
+    private void initializeGoogleAppClient(){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            initializeGoogleAPIClient();
+        } else {
+            if (!isLocationPermissionGranted()) {
+                askForLocationPermission();
+            } else {
+                initializeGoogleAPIClient();
+            }
+        }
+    }
+    private void setupRefreshLayout(){
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
             public void onRefresh() {
-                Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
                         tryToFetchResults();
                     }
-                }, 2000);
+                }, 2000);       //TODO maybe change this?
             }
         });
-        setupFloatingSearch(sourceSearchView);
-        setupFloatingSearch(destinationSearchView);
-        setupDrawer();
-
-
-
-        if(!isNetworkConnected()) {
-            Snackbar.make(resultLayout, "No Network Connectivity", Snackbar.LENGTH_LONG)
-                    .setAction("Open Settings", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-                            startActivity(myIntent);
-                            Log.e("lo  ", "snack");
-                        }
-                    }).show();
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            initializeGoogleAPIClient();
-        } else {
-
-            // Here, thisActivity is the current activity
-            if (ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOC);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            } else {
-                initializeGoogleAPIClient();
-            }
-        }
-
-        lh = getActivity().getSharedPreferences(PREFS_NAME, 0);
-
-//        String json = lh.getString("historyArray", "");
-//
-//        Type type = new TypeToken<List<PlaceSuggestion>>(){}.getType();
-//        Gson gson = new Gson();
-//        locationHistory = gson.fromJson(json, type);
-//        if(locationHistory==null) locationHistory=new ArrayList<PlaceSuggestion>();
-
-    }
-    @Override
-    public boolean onActivityBackPress() {
-        //if mSearchView.setSearchFocused(false) causes the focused search
-        //to close, then we don't want to close the activity. if mSearchView.setSearchFocused(false)
-        //returns false, we know that the search was already closed so the call didn't change the focus
-        //state and it makes sense to call supper onBackPressed() and close the activity
-        if (!sourceSearchView.setSearchFocused(false)) {
-            return false;
-        }
-        return true;
     }
     private void setupFloatingSearch(final FloatingSearchView sv){
         sv.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener(){
@@ -189,20 +165,31 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                     activeSearchView = sv.getId();
                     sv.showProgress();
 
-                    if(newQuery.length()>1){  //only qury when len >2
-                        //TODO wrap this into runable handler
-                        // cancel all the previous requests in the queue to optimise your network calls during autocomplete search
-                        MainActivity.volleyQueueInstance.cancelRequestInQueue(GETPLACESHIT);
+                    if(newQuery.length()>1){  //only qury when len >2      //TODO somehow optimize this?
+                        Runnable run = new Runnable() {
+                            @Override
+                            public void run() {
 
-                        //build Get url of PlaceSuggestion Autocomplete and hit the url to fetch result.
-                        request = new VolleyJSONRequest(Request.Method.GET, getPlaceAutoCompleteUrl(sv.getQuery()), null, null, HomeFragment.this, HomeFragment.this);
+                                // cancel all the previous requests in the queue to optimise your network calls during autocomplete search
+                                MainActivity.volleyQueueInstance.cancelRequestInQueue(GETPLACESHIT);
 
-                        //Give a tag to your request so that you can use this tag to cancle request later.
-                        request.setTag(GETPLACESHIT);
+                                //build Get url of PlaceSuggestion Autocomplete and hit the url to fetch result.
+                                request = new VolleyJSONRequest(Request.Method.GET, getPlaceAutoCompleteUrl(sv.getQuery()), null, null, HomeFragment.this, HomeFragment.this);
 
-                        MainActivity.volleyQueueInstance.addToRequestQueue(request);
+                                //Give a tag to your request so that you can use this tag to cancle request later.
+                                request.setTag(GETPLACESHIT);
+
+                                MainActivity.volleyQueueInstance.addToRequestQueue(request);
+                            }
+
+                        };
+                        if (handler != null) {
+                            handler.removeCallbacksAndMessages(null);
+                        } else {
+                            handler = new Handler();
+                        }
+                        handler.postDelayed(run, 1000);  //TODO study this
                     }
-
                     sv.hideProgress();
                 }
                 Log.d(TAG, "onSearchTextChanged()");
@@ -212,49 +199,36 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
             @Override
             public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
                 suggestionClicked = searchSuggestion.getBody();
-                Toast.makeText(getActivity(), "suggestion clicked " + searchSuggestion.getBody(), Toast.LENGTH_SHORT).show();
-                sv.setSearchBarTitle(searchSuggestion.getBody());
-
+                lastQuery = suggestionClicked;
+                //Toast.makeText(getActivity(), "suggestion clicked " + searchSuggestion.getBody(), Toast.LENGTH_SHORT).show();
+                sv.setSearchBarTitle(suggestionClicked);
                 sv.clearSearchFocus();
-                //sv.clearSuggestions();
-
-                //sv.clearSearchFocus();
-
                 tryToFetchResults();
             }
             @Override
             public void onSearchAction(String query) {
-                Toast.makeText(getActivity(), "search clicked" + query, Toast.LENGTH_SHORT).show();
+                lastQuery = query;
+                //Toast.makeText(getActivity(), "search clicked" + query, Toast.LENGTH_SHORT).show();
                 tryToFetchResults();
             }
         });
         sv.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
-
-                //show suggestions when search bar gains focus (typically history suggestions)
-                Toast.makeText(getActivity(), "focus " + sv.getQuery(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "focus " + sv.getQuery(), Toast.LENGTH_SHORT).show();
                 sv.bringToFront();
-//                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)sv.getLayoutParams();
-//                params.setMargins(0,10,0,0);
-//                sv.setLayoutParams(params);
+                if (lastQuery.length()!=0) sv.setSearchBarTitle(lastQuery); //TODO fix this
                 if(sv.getId() == sourceSearchView.getId()) {
                     sv.swapSuggestions(new PlaceSuggestionHistoryHelper(getActivity(),"sourceSeachHistory").getHistory());
                 }else {
                     sv.swapSuggestions(new PlaceSuggestionHistoryHelper(getActivity(),"destinationSeachHistory").getHistory());
+                    //TODO float destination view to top with animation
                 }
-                //renderResults();
             }
 
             @Override
             public void onFocusCleared() {
-
-                //set the title of the bar so that when focus is returned a new query begins
-                //sv.setSearchBarTitle(mLastQuery);
-                //you can also set setSearchText(...) to make keep the query there when not focused and when focus returns
-                //mSearchView.setSearchText(searchSuggestion.getBody());
-
-                Toast.makeText(getActivity(), "focus Cleared " + sv.getQuery(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "focus Cleared " + sv.getQuery(), Toast.LENGTH_SHORT).show();
                 sv.clearSuggestions();
 
                 if(sv.getId() == sourceSearchView.getId()) {
@@ -269,30 +243,32 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
             public void onActionMenuItemSelected(MenuItem item) {
 
                 if (item.getItemId() == R.id.action_location) {
-                    Toast.makeText(getActivity(), "location", Toast.LENGTH_SHORT).show();
-                    try {
-                        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                                mGoogleApiClient);
-
-                        if (mLastLocation != null) {
-                            latitude = mLastLocation.getLatitude();
-                            longitude = mLastLocation.getLongitude();
+                    if(!isLocationPermissionGranted()) askForLocationPermission();
+                    if(!isLocationEnabled()) askToTurnOnLocation();
+                    if(isLocationPermissionGranted() && isLocationEnabled()){
+                        try {
+                            //TODO handle mglooglepai null error
+                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                                    mGoogleApiClient);
+                            if (mLastLocation != null) {
+                                latitude = mLastLocation.getLatitude();
+                                longitude = mLastLocation.getLongitude();
+                            }
+                        } catch (SecurityException e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
+                        sv.setSearchBarTitle(String.valueOf(latitude)+","+String.valueOf(longitude));
+                        tryToFetchResults();
                     }
-                    sv.setSearchBarTitle(String.valueOf(latitude)+","+String.valueOf(longitude)); //TODO: make sure this order is correct
+
                 } else if(item.getItemId() == R.id.action_voice_rec) {
                     activeSearchView = sv.getId();
-                    Toast.makeText(getActivity(), "voice", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                     // Specify the calling package to identify your application
                     intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass()
                             .getPackage().getName());
-
                     // Display an hint to the user about what he should say.
-                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "hint");
+                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, R.string.voice_search_hint);
 
                     // Given an hint to the recognizer about what the user is going to say
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -300,8 +276,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
 
                     // If number of Matches is not selected then return show toast message
 
-
-                    int noOfMatches = 2;
+                    int noOfMatches = 1;
                     // Specify how many results you want to receive. The results will be
                     // sorted where the first result is the one with higher confidence.
 
@@ -328,6 +303,7 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
                     leftIcon.setAlpha(0.0f);
                     leftIcon.setImageDrawable(null);
                 }
+                //TODO add <- icon at end
             }
 
         });
@@ -340,10 +316,8 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
     }
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
         return cm.getActiveNetworkInfo() != null;
     }
-
 
 
     public String getPlaceAutoCompleteUrl(String input) {
@@ -358,70 +332,52 @@ public class HomeFragment extends BaseFragment  implements  Response.Listener<St
         urlString.append("&location=");
         urlString.append(latitude + "," + longitude); // append lat long of current location to show nearby results.
         urlString.append("&radius=500&language=en");
-        urlString.append("&key=" + "AIzaSyDtAErhpx1IhGArwC-WRa_0BERbsu5EeAg");
+        urlString.append("&key=" + "AIzaSyDtAErhpx1IhGArwC-WRa_0BERbsu5EeAg");      //TODO secure this
 
         Log.d("FINAL URL:::   ", urlString.toString());
         return urlString.toString();
     }
     @Override
     public void onErrorResponse(VolleyError error) {
-        //TODO toast
-        //searchBtn.setVisibility(View.VISIBLE);
-
+        Log.e("error","googlemaps error");
     }
-    //TODO set also for destination searchview
     @Override
     public void onResponse(String response) {
 
-
-//        searchBtn.setVisibility(View.VISIBLE);
         Log.d("PLACES RESULT:::", response);
-        Gson gson = new Gson();
-        predictions = gson.fromJson(response, PlacePredictions.class);
+        predictions = new Gson().fromJson(response, PlacePredictions.class);
         ArrayList<PlaceSuggestion>  a = predictions.getPlaces();
 
-        if(a.size()>0){
-            Log.e("fiiinn",a.get(0).getPlaceDesc());
-            Log.e("chej",a.get(0).getPlaceID());
-
-            if(activeSearchView == sourceSearchView.getId()) {
-                sourceSearchView.swapSuggestions(a);
-            }else {
-                destinationSearchView.swapSuggestions(a);
+        try{
+            if(a.size()>0){
+                if(activeSearchView == sourceSearchView.getId()) {
+                    sourceSearchView.swapSuggestions(a);
+                }else {
+                    destinationSearchView.swapSuggestions(a);
+                }
             }
+        }catch (Exception e){
+            Log.e("exception",e.toString());
         }
-//
-//        if (mAutoCompleteAdapter == null) {
-//            mAutoCompleteAdapter = new AutoCompleteAdapter(this, predictions.getPlaces(), PickLocationActivity.this);
-//            mAutoCompleteList.setAdapter(mAutoCompleteAdapter);
-//        } else {
-//            mAutoCompleteAdapter.clear();
-//            mAutoCompleteAdapter.addAll(predictions.getPlaces());
-//            mAutoCompleteAdapter.notifyDataSetChanged();
-//            mAutoCompleteList.invalidate();
-//        }
     }
-
-
 
     @Override
     public void onConnected(Bundle bundle) {
+        if(isLocationEnabled()) {       //TODO break this
+            try {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                        mGoogleApiClient);
 
-        Log.d("onconnected","func call");
-        if(isLocationEnabled()) Log.e("locset","enavle");
-        else askToTurnOnLocation();
-        try {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
+                if (mLastLocation != null) {
+                    latitude = mLastLocation.getLatitude();
+                    longitude = mLastLocation.getLongitude();
+                }
 
-            if (mLastLocation != null) {
-                latitude = mLastLocation.getLatitude();
-                longitude = mLastLocation.getLongitude();
+            } catch (SecurityException e) {
+                e.printStackTrace();
             }
-
-        } catch (SecurityException e) {
-            e.printStackTrace();
         }
+        else askToTurnOnLocation();
     }
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -473,6 +429,14 @@ Log.e("connedcte","fail");
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
+    private boolean isLocationPermissionGranted(){
+        return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+    private void askForLocationPermission(){
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                MY_PERMISSIONS_REQUEST_LOC);
+    }
     private void askToTurnOnLocation() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setTitle("Enable Location")
@@ -500,37 +464,27 @@ Log.e("connedcte","fail");
             ((MainActivity)getActivity()).startDownload(sourceInputText,destinationInputText);
     }
     public void renderResults(String rawResult){
-
+        //TODO do this
         ArrayList<Leg> realResults = null;
 
-        Log.e("LEGS RESULT:::", rawResult);
-        Gson gson = new Gson();
+        Log.d("LEGS RESULT:::", rawResult);
         try {
-            legs = gson.fromJson(rawResult,Legs.class);
+            legs = new Gson().fromJson(rawResult,Legs.class);
             realResults = legs.getLegs();
-            Log.e("ya bithc",String.valueOf(realResults.get(0).dir_end));
-            Log.e("ya bithc",String.valueOf(realResults.get(0).distance));
-            Log.e("ya bithc",String.valueOf(realResults.get(0).duration));
-            Log.e("ya bithc",String.valueOf(realResults.get(0).dir_start));
+//            Log.e("ya bithc",String.valueOf(realResults.get(0).dir_end));
+//            Log.e("ya bithc",String.valueOf(realResults.get(0).distance));
+//            Log.e("ya bithc",String.valueOf(realResults.get(0).duration));
+//            Log.e("ya bithc",String.valueOf(realResults.get(0).dir_start));
         }catch (Exception e){
             Log.e("exp",e.toString());
         }
-        //render a
-
-        Log.e("frag","tessst");
-//        ArrayList<Leg> fakedata = new ArrayList<>();
-//        fakedata.add(new Leg(-2,20,1));
-//        fakedata.add(new Leg(-1,20,2));
-//        fakedata.add(new Leg(3,20,3));
-//        fakedata.add(new Leg(-2,20,6));
-
 
         resultLayout.removeAllViews();
 
         if(realResults == null){
-
+            //TODO handle this
         }if(realResults.size() == 0){
-
+            //TODO handle this
         }
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -538,7 +492,6 @@ Log.e("connedcte","fail");
 
         resultText = (TextView)resultTemplate.findViewById(R.id.resut_text);
         resultText.setText("fake result");
-
 
 
         LineChart lineChart = (LineChart)resultTemplate.findViewById(R.id.linechart);
@@ -588,7 +541,6 @@ Log.e("connedcte","fail");
                     }else {
                         destinationSearchView.setSearchBarTitle(textMatchList.get(0));
                     }
-                    Log.e("spch",textMatchList.get(0));
                 }
                 //Result code for various error.
             }else if(resultCode == RecognizerIntent.RESULT_AUDIO_ERROR){
